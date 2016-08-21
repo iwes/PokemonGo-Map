@@ -18,7 +18,6 @@ from queue import Queue
 from flask_cors import CORS
 from flask_cache_bust import init_cache_busting
 from gevent import pywsgi
-from gevent import monkey
 
 from pogom import config
 from pogom.app import Pogom
@@ -27,9 +26,6 @@ from pogom.utils import get_args, get_encryption_lib_path
 from pogom.search import search_overseer_thread, search_overseer_thread_ss
 from pogom.models import init_database, create_tables, drop_tables, Pokemon, db_updater, clean_db_loop
 from pogom.webhook import wh_updater
-
-# patches stdlib (including socket and ssl modules) to cooperate with other greenlets
-monkey.patch_all()
 
 
 # Currently supported pgoapi
