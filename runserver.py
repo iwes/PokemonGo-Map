@@ -213,21 +213,10 @@ def main():
     config['GMAPS_KEY'] = args.gmaps_key
 
     if args.no_server:
-        # This loop allows for ctrl-c interupts to work since flask won't be holding the program open
+        # This loop allows for ctrl-c interupts to work since gevent won't be holding the program open
         while search_thread.is_alive():
             time.sleep(60)
     else:
-        if args.debug_flask:
-            # use the flask server.
-            ssl_context = None
-            if args.ssl_certificate and args.ssl_privatekey \
-                    and os.path.exists(args.ssl_certificate) and os.path.exists(args.ssl_privatekey):
-                ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
-                ssl_context.load_cert_chain(args.ssl_certificate, args.ssl_privatekey)
-                log.info('Web server in SSL mode.')
-
-            app.run(threaded=True, use_reloader=False, debug=args.debug, host=args.host, port=args.port, ssl_context=ssl_context)
-        else:
             # run gevent server
             if args.ssl_certificate and args.ssl_privatekey \
                     and os.path.exists(args.ssl_certificate) and os.path.exists(args.ssl_privatekey):
