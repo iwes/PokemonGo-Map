@@ -650,6 +650,14 @@ def search_worker_thread(args, account_queue, account_failures, search_items_que
                 # Make the actual request (finally!)
                 response_dict = map_request(api, step_location, args.jitter)
 
+                # an empty response COULD be a banned IP/account.. or it could be a temporary network issue.
+                # wait scan_delay seconds and retry ONCE
+                if not response_dict:
+                    status['message'] = 'Invalid response at {:6f},{:6f}, retrying in {}s'.format(step_location[0], step_location[1], args.scan_delay)
+                    log.error(status['message'])
+                    time.sleep(args.scan_delay)
+                    response_dict = map_request(api, step_location, args.jitter)
+
                 # G'damnit, nothing back. Mark it up, sleep, carry on
                 if not response_dict:
                     status['fail'] += 1
